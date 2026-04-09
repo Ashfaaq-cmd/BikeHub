@@ -395,6 +395,7 @@ footer { background: var(--black); padding: 52px 0 24px; }
 .auth-title { font-family: 'Syne', sans-serif; font-size: 27px; font-weight: 800; color: var(--text); }
 .auth-subtitle { font-size: 13px; color: var(--grey); margin-top: -10px; }
 
+
 /* Forms */
 .form-group { display: flex; flex-direction: column; gap: 7px; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }

@@ -8,24 +8,24 @@
 </head>
 <body>
 <nav class="navbar"><div class="container">
-    <a href="index.html" class="nav-logo">Bike<span>Hub</span></a>
+    <a href="index.php" class="nav-logo">Bike<span>Hub</span></a>
     <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li class="nav-dropdown"><a href="products.html">Products <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></a>
+        <li><a href="index.php">Home</a></li>
+        <li class="nav-dropdown"><a href="php/products.php">Products <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></a>
             <div class="dropdown-menu">
-                <a href="products.html?cat=bikes" class="dropdown-item"><div class="dropdown-icon"><svg viewBox="0 0 24 24"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/></svg></div>Road Bikes</a>
-                <a href="products.html?cat=gears" class="dropdown-item"><div class="dropdown-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/></svg></div>Gear Sets</a>
-                <a href="products.html?cat=helmets" class="dropdown-item"><div class="dropdown-icon"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 017 7c0 5-7 13-7 13S5 14 5 9a7 7 0 017-7z"/></svg></div>Helmets</a>
-                <a href="products.html?cat=accessories" class="dropdown-item"><div class="dropdown-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/></svg></div>Accessories</a>
+                <a href="php/products.php?cat=bikes"       class="dropdown-item">Road Bikes</a>
+                <a href="php/products.php?cat=gears"       class="dropdown-item">Gear Sets</a>
+                <a href="php/products.php?cat=helmet"      class="dropdown-item">Helmets</a>
+                <a href="php/products.php?cat=accessories" class="dropdown-item">Accessories</a>
                 <div class="dropdown-sep"></div>
-                <a href="products.html" class="dropdown-item"><div class="dropdown-icon"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/></svg></div>All Products</a>
+                <a href="php/products.php"                 class="dropdown-item">All Products</a>
             </div>
         </li>
         <li><a href="about.html">About</a></li>
         <li><a href="contact.html">Contact</a></li>
     </ul>
     <div class="nav-right">
-        <a href="register.html" class="btn-nav-blue">Sign Up</a>
+        <a href="register.php" class="btn-nav-blue">Sign Up</a>
     </div>
 </div></nav>
 
@@ -40,27 +40,56 @@
             <div class="auth-feat"><div class="feat-dot"></div><span>Member-only discounts</span></div>
         </div>
     </div>
+
     <div class="auth-right">
         <div class="auth-title">Log In</div>
         <div class="auth-subtitle">Enter your credentials to continue</div>
-        <!--wrap in PHP, add action="php/login.php" method="POST", add error display -->
-        <form id="login-form" action="php/login.php" method="POST">
+
+        <?php
+        session_start();
+        if (!empty($_SESSION['login_error'])): 
+        ?>
+            <div class="auth-server-error">
+                <?= htmlspecialchars($_SESSION['login_error']) ?>
+            </div>
+        <?php
+            unset($_SESSION['login_error']);
+        endif; ?>
+
+        <form id="login-form" action="php/login_process.php" method="POST">
             <div class="form-group">
                 <label class="form-label" for="email">Email Address</label>
-                <input class="form-input" type="email" id="email" name="email" placeholder="you@email.com" required>
+                <input class="form-input" type="email" id="email" name="email"
+                       placeholder="you@email.com" required
+                       value="<?= htmlspecialchars($_SESSION['login_old_email'] ?? '') ?>">
             </div>
             <div class="form-group" style="margin-top:16px">
                 <label class="form-label" for="password">Password</label>
-                <input class="form-input" type="password" id="password" name="password" placeholder="••••••••••" required>
+                <input class="form-input" type="password" id="password" name="password"
+                       placeholder="••••••••••" required>
             </div>
             <div style="margin-top:20px">
                 <button type="submit" name="login" class="form-submit">Log In →</button>
             </div>
         </form>
+
         <div class="form-divider">or</div>
-        <div class="form-switch">Don't have an account? <a href="register.html">Create one →</a></div>
+        <div class="form-switch">Don't have an account? <a href="register.php">Create one →</a></div>
     </div>
 </div>
+
+<style>
+.auth-server-error {
+    background: rgba(239,68,68,.1);
+    border: 1px solid rgba(239,68,68,.35);
+    color: #f87171;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+</style>
+
 <script src="script.js"></script>
 </body>
 </html>

@@ -37,34 +37,6 @@
 //   img      - relative path to image inside Bikehub Image/ folder
 //   desc     - short product description on card
 // ================================================================
-const staticProducts = [
-
-    // ── Road Bikes ──────────────────────────────────────────────
-    { id:1,  name:'Orbea Orca M30i',        cat:'bikes',       badge:'NEW',  price:2100, oldPrice:null, img:'Bikehub Image/Bikes/orbea.webp',        desc:'2025 full carbon road bike. Race-ready geometry.' },
-    { id:2,  name:'Canyon Aeroad CF SLX',   cat:'bikes',       badge:'',     price:3200, oldPrice:null, img:'Bikehub Image/Bikes/canyon.jpg',          desc:'Aerodynamic carbon frame. UCI approved race geometry.' },
-    { id:3,  name:'BMC Teammachine SLR',    cat:'bikes',       badge:'SALE', price:1800, oldPrice:2200, img:'Bikehub Image/Bikes/bmc.jpeg',            desc:'Lightweight aluminium race bike. Shimano 105 groupset.' },
-    { id:4,  name:'Giant Defy Advanced',    cat:'bikes',       badge:'',     price:1650, oldPrice:null, img:'Bikehub Image/Bikes/giant.jpg',           desc:'Endurance road bike with D-Fuse seatpost.' },
-    { id:5,  name:'Colnago Y1RS',           cat:'bikes',       badge:'NEW',  price:5200, oldPrice:null, img:'Bikehub Image/Bikes/colnago-y1rs.jpeg',   desc:'Full carbon aero frame. Colnago\'s finest road machine.' },
-    { id:6,  name:'S-Works Tarmac SL8',    cat:'bikes',       badge:'',     price:4100, oldPrice:null, img:'Bikehub Image/Bikes/sworks.jpeg',          desc:'World\'s lightest production road bike frame.' },
-
-    // ── Gear Sets ───────────────────────────────────────────────
-    { id:7,  name:'Shimano 105 R7000',      cat:'gears',       badge:'SALE', price:349,  oldPrice:420,  img:'Bikehub Image/Gears/rear105.webp',        desc:'11-speed groupset. Precision shifting for every terrain.' },
-    { id:8,  name:'Shimano Cassette CS',    cat:'gears',       badge:'',     price:89,   oldPrice:null, img:'Bikehub Image/Gears/cassette.webp',       desc:'11-32T cassette. Compatible with all 11-speed drivetrains.' },
-    { id:9,  name:'KMC X11 Chain',          cat:'gears',       badge:'',     price:34,   oldPrice:null, img:'Bikehub Image/Gears/chain.jpg',           desc:'11-speed chain. Smooth, quiet and very durable.' },
-    { id:10, name:'Shimano Rear Derailleur',cat:'gears',       badge:'NEW',  price:129,  oldPrice:null, img:'Bikehub Image/Gears/shimano.webp',        desc:'105-grade rear mech. Precise and ultra reliable.' },
-
-    // ── Helmets ─────────────────────────────────────────────────
-    { id:11, name:'Giro Aether MIPS',       cat:'helmets',     badge:'NEW',  price:310,  oldPrice:null, img:'Bikehub Image/Helmet/giro.jpeg',          desc:'MIPS protected. One of the lightest aero helmets available.' },
-    { id:12, name:'ABUS Gamechanger',       cat:'helmets',     badge:'',     price:195,  oldPrice:null, img:'Bikehub Image/Helmet/abus.webp',          desc:'Aero road helmet with excellent ventilation system.' },
-    { id:13, name:'MET Trenta 3K Carbon',   cat:'helmets',     badge:'SALE', price:220,  oldPrice:280,  img:'Bikehub Image/Helmet/met.webp',           desc:'Ultra-light carbon shell. TwoFace magnetic buckle closure.' },
-    { id:14, name:'S-Works Prevail 3',      cat:'helmets',     badge:'',     price:300,  oldPrice:null, img:'Bikehub Image/Helmet/s-works-helmet.webp',desc:'MIPS-certified aero helmet. Wind tunnel optimised.' },
-
-    // ── Accessories ─────────────────────────────────────────────
-    { id:15, name:'Saddlebag Waterproof',   cat:'accessories', badge:'',     price:45,   oldPrice:null, img:'Bikehub Image/Accesories/saddlebag.jpg',  desc:'Waterproof seat bag. Fits spare tubes, tools and more.' },
-    { id:16, name:'Tubeless Sealant 500ml', cat:'accessories', badge:'',     price:18,   oldPrice:null, img:'Bikehub Image/Accesories/sealant.jpg',    desc:'High-performance tubeless tyre sealant. 500ml bottle.' },
-    { id:17, name:'Gravel Tyres 700x38c',   cat:'accessories', badge:'NEW',  price:65,   oldPrice:null, img:'Bikehub Image/Accesories/tyres.webp',     desc:'Versatile gravel tyre. Fast on road, capable off-road.' },
-    { id:18, name:'Cycling Jersey',         cat:'accessories', badge:'',     price:89,   oldPrice:null, img:'Bikehub Image/Clothing/jersey.webp',       desc:'Lightweight race jersey with three rear pockets.' },
-];
 
 
 // ================================================================
@@ -160,7 +132,7 @@ function renderCart() {
             + '<svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>'
             + '<h3>Your cart is empty</h3>'
             + '<p>Looks like you haven\'t added anything yet.</p>'
-            + '<a href="products.html" class="btn-blue-solid">Browse Products</a>'
+            + '<a href="products.php" class="btn-blue-solid">Browse Products</a>'
             + '</div>';
         if (subtotalEl) subtotalEl.textContent = '$0.00';
         if (totalEl)    totalEl.textContent    = '$0.00';
@@ -429,7 +401,7 @@ function initHover() {
 //   Each chip has data-cat attribute ('all', 'bikes', 'gears' etc.)
 //   Clicking a chip filters the visible cards to that category
 //   Also reads ?cat= URL parameter on page load so links like
-//   products.html?cat=bikes pre-select the Bikes chip
+//   products.php?cat=bikes pre-select the Bikes chip
 // ================================================================
 function initSearch() {
     var searchInput = document.getElementById('search-input');
@@ -689,7 +661,7 @@ document.addEventListener('DOMContentLoaded', function() {
         renderProducts('featured-grid', featured);
     }
 
-    // All products grid on products.html
+    // All products grid on products.php
     var allGrid = document.getElementById('all-products-grid');
     if (allGrid) {
         // Check ?cat= URL parameter to filter on load

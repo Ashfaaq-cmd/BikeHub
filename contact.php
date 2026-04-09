@@ -8,22 +8,22 @@
 </head>
 <body>
 <nav class="navbar"><div class="container">
-    <a href="index.html" class="nav-logo">Bike<span>Hub</span></a>
+    <a href="index.php" class="nav-logo">Bike<span>Hub</span></a>
     <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li class="nav-dropdown"><a href="products.html">Products <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></a>
+        <li><a href="index.php">Home</a></li>
+        <li class="nav-dropdown"><a href="products.php">Products <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></a>
             <div class="dropdown-menu">
-                <a href="products.html?cat=bikes" class="dropdown-item"><div class="dropdown-icon"><svg viewBox="0 0 24 24"><circle cx="18.5" cy="17.5" r="3.5"/></svg></div>Road Bikes</a>
-                <a href="products.html?cat=gears" class="dropdown-item"><div class="dropdown-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/></svg></div>Gear Sets</a>
-                <a href="products.html" class="dropdown-item"><div class="dropdown-icon"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/></svg></div>All Products</a>
+                <a href="products.php?cat=bikes" class="dropdown-item"><div class="dropdown-icon"><svg viewBox="0 0 24 24"><circle cx="18.5" cy="17.5" r="3.5"/></svg></div>Road Bikes</a>
+                <a href="products.php?cat=gears" class="dropdown-item"><div class="dropdown-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/></svg></div>Gear Sets</a>
+                <a href="products.php" class="dropdown-item"><div class="dropdown-icon"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/></svg></div>All Products</a>
             </div>
         </li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="contact.html" class="active">Contact</a></li>
+        <li><a href="about.php">About</a></li>
+        <li><a href="contact.php" class="active">Contact</a></li>
     </ul>
     <div class="nav-right">
-        <a href="cart.html" class="cart-link"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg><span class="cart-badge" id="cart-count">0</span></a>
-        <a href="account.html" class="btn-nav-blue">Account</a>
+        <a href="cart.php" class="cart-link"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg><span class="cart-badge" id="cart-count">0</span></a>
+        <a href="account.php" class="btn-nav-blue">Account</a>
     </div>
 </div></nav>
 
@@ -54,7 +54,7 @@
             <!-- RIGHT: Form  action="php/contact.php" method="POST", INSERT to DB -->
             <div class="contact-form">
                 <div class="contact-form-title">Send a message</div>
-                <form id="contact-form" action="php/contact.php" method="POST">
+                <form id="contact-form" action="php/contact_process.php" method="POST">
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">First Name</label>
@@ -91,6 +91,25 @@
     </div>
 </section>
 
-<footer><div class="container"><div class="footer-bottom" style="border-top:none;padding-top:0"><span class="footer-copy">© 2026 BikeHub. All rights reserved.</span></div></div></footer>
+<!-- FOOTER  -->
+<footer><div class="container">
+    <div class="footer-top">
+        <div>
+            <div class="footer-logo">Bike<span>Hub</span></div>
+            <p class="footer-desc">Your one-stop destination for premium cycling gear, bikes and accessories for every type of rider.</p>
+            <div class="footer-socials">
+                <a href="#" class="social-btn"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
+                <a href="#" class="social-btn"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/></svg></a>
+                <a href="#" class="social-btn"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5z"/></svg></a>
+            </div>
+        </div>
+        <div><div class="footer-col-title">Shop</div><ul class="footer-links"><li><a href="products.php?cat=bikes">Road Bikes</a></li><li><a href="products.php?cat=gears">Gear Sets</a></li><li><a href="products.php?cat=helmet">Helmets</a></li><li><a href="products.php?cat=accessories">Accessories</a></li></ul></div>
+        <div><div class="footer-col-title">Company</div><ul class="footer-links"><li><a href="about.php">About Us</a></li><li><a href="about.php">Our Team</a></li><li><a href="contact.php">Contact</a></li><li><a href="#">Careers</a></li></ul></div>
+        <div><div class="footer-col-title">Help</div><ul class="footer-links"><li><a href="#">FAQ</a></li><li><a href="#">Returns</a></li><li><a href="#">Shipping Info</a></li><li><a href="#">Track Order</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+        <span class="footer-copy">© 2026 BikeHub. All rights reserved.</span>
+    </div>
+</div></footer>
 <script src="script.js"></script>
 </body></html>
