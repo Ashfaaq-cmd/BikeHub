@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BikeHub — Ride Faster. Gear Smarter.</title>
+
+    <!-- Google Fonts: Syne (headings/logo) + DM Sans (body text) -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+
+    <!-- Our main stylesheet — all colours, layout, components -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- jQuery 3.7.1 loaded from CDN (Content Delivery Network)
+         Must come BEFORE script.js so the $ symbol is defined
+         We use jQuery for 3 things:
+           1. Navbar colour change on scroll
+           2. Product card hover glow effect
+           3. Form input focus/blur highlight -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     NAVBAR
+     Sticky top bar with: logo | nav links | cart icon | auth buttons
+     The Products dropdown opens on hover using CSS only
+     (.nav-dropdown:hover .dropdown-menu → display:block)
+     No icons inside dropdown as requested
+═══════════════════════════════════════════════════════════════ -->
+<nav class="navbar">
+    <div class="container">
+
+        <!-- Logo — "Bike" white, "Hub" blue (set in CSS with span colour) -->
+        <a href="index.html" class="nav-logo">Bike<span>Hub</span></a>
+
+        <ul class="nav-links">
+
+            <!-- Active class highlights the current page link -->
+            <li><a href="index.html" class="active">Home</a></li>
+
+            <!-- Dropdown wrapper — CSS hover shows .dropdown-menu -->
+            <li class="nav-dropdown">
+                <a href="products.html">
+                    Products
+                    <!-- Small chevron arrow, rotates on hover via CSS transition -->
+                    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+                </a>
+
+                <!-- Dropdown menu — no icons, just text links as requested -->
+                <div class="dropdown-menu">
+                    <a href="products.html?cat=bikes"       class="dropdown-item">Road Bikes</a>
+                    <a href="products.html?cat=gears"       class="dropdown-item">Gear Sets</a>
+                    <a href="products.html?cat=helmets"     class="dropdown-item">Helmets</a>
+                    <a href="products.html?cat=accessories" class="dropdown-item">Accessories</a>
+                    <div class="dropdown-sep"></div><!-- horizontal rule separator -->
+                    <a href="products.html"                 class="dropdown-item">All Products</a>
+                </div>
+            </li>
+
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+
+        <div class="nav-right">
+            <!-- Cart icon — badge count updated by updateCartBadge() in script.js -->
+            <a href="cart.html" class="cart-link">
+                <svg viewBox="0 0 24 24">
+                    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <path d="M16 10a4 4 0 01-8 0"/>
+                </svg>
+                <span class="cart-badge" id="cart-count">0</span>
+            </a>
+
+            <a href="login.html"    class="btn-nav-outline">Log In</a>
+            <a href="register.html" class="btn-nav-blue">Sign Up</a>
+        </div>
+
+    </div>
+</nav>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     HERO IMAGE CAROUSEL
+     3 slides, each with a different colour theme:
+       Slide 1 → Blue  (Road Bikes)
+       Slide 2 → Green (Gear Sets)
+       Slide 3 → Purple (Helmets)
+
+     How it works (script.js):
+       - goTo(index): moves .slides-track with CSS transform translateX
+       - setInterval auto-advances every 5000ms
+       - Dot buttons and arrow buttons call goTo() manually
+       - Touch swipe also supported (touchstart / touchend events)
+
+     Images come from our Bikehub Image/ folder.
+     onerror hides the image if the path breaks.
+═══════════════════════════════════════════════════════════════ -->
+<section class="carousel-section">
+
+    <!-- Decorative grid line background — pure CSS, no content -->
+    <div class="carousel-grid-bg"></div>
+
+    <!-- Track slides horizontally — JS applies transform: translateX(-N * 100%) -->
+    <div class="slides-track" id="slidesTrack">
+
+
+        <!-- ── SLIDE 1 ── Blue theme — Road Bikes ── -->
+        <div class="slide slide-blue">
+
+            <!-- Left panel: badge + heading + subtitle + buttons + stats -->
+            <div class="slide-left">
+
+                <!-- Pill-shaped eyebrow badge -->
+                <div class="slide-badge" style="background:rgba(26,107,255,.1); border:1px solid rgba(26,107,255,.22)">
+                    <div class="badge-dot" style="background:#1a6bff"></div>
+                    <span class="badge-text" style="color:#1a6bff">2026 Season Drop</span>
+                </div>
+
+                <!-- Main headline — accent word coloured with inline style -->
+                <h1 class="slide-title">
+                    Ride Faster.<br>
+                    Gear <span style="color:#1a6bff">Smarter.</span>
+                </h1>
+
+                <p class="slide-sub">
+                    Premium road bikes and cycling gear for every type of rider — commuters to competitors.
+                </p>
+
+                <!-- Two CTA buttons: primary (filled blue) + ghost (transparent) -->
+                <div class="slide-ctas">
+                    <a href="products.html" class="btn-slide-primary"
+                       style="background:#1a6bff; box-shadow:0 0 28px rgba(26,107,255,.38)">
+                        Shop Now →
+                    </a>
+                    <a href="products.html" class="btn-slide-ghost">View Catalogue</a>
+                </div>
+
+                <!-- Three quick stats at the bottom of the left panel -->
+                <div class="slide-stats">
+                    <div><div class="stat-num">200+</div><div class="stat-lbl">Products</div></div>
+                    <div><div class="stat-num">50+</div><div class="stat-lbl">Brands</div></div>
+                    <div><div class="stat-num">24/7</div><div class="stat-lbl">Support</div></div>
+                </div>
+            </div>
+
+            <!-- Right panel: decorative rings + floating product card -->
+            <div class="slide-right">
+                <div class="slide-glow"></div><!-- radial gradient overlay -->
+                <div class="ring ring-lg"></div><!-- large decorative ring -->
+                <div class="ring ring-md"></div><!-- medium ring -->
+                <div class="ring ring-sm"></div><!-- small ring -->
+
+                <!-- Glassmorphism product card on top of the rings -->
+                <div class="feat-card">
+                    <!-- Real image from our folder — onerror hides if missing -->
+                    <img src="Bikehub Image/Bikes/orbea.webp"
+                         alt="Orbea road bike"
+                         style="width:100%; height:120px; object-fit:cover; border-radius:12px"
+                         onerror="this.style.display='none'">
+
+                    <div class="feat-card-tag"   style="color:#1a6bff">Featured Bike</div>
+                    <div class="feat-card-name">Orbea Orca M30i</div>
+                    <div class="feat-card-price">$2,100</div>
+                    <a href="products.html" class="feat-card-btn" style="background:#1a6bff">View Details</a>
+                </div>
+            </div>
+        </div><!-- end slide 1 -->
+
+
+        <!-- ── SLIDE 2 ── Green theme — Gear Sets ── -->
+        <div class="slide slide-green">
+
+            <div class="slide-left">
+                <div class="slide-badge" style="background:rgba(34,197,94,.1); border:1px solid rgba(34,197,94,.22)">
+                    <div class="badge-dot" style="background:#22c55e"></div>
+                    <span class="badge-text" style="color:#22c55e">New Arrivals</span>
+                </div>
+
+                <h1 class="slide-title">
+                    Shift Into <span style="color:#22c55e">High Gear.</span>
+                </h1>
+
+                <p class="slide-sub">
+                    Latest Shimano and SRAM groupsets. Precision engineering for every climb and sprint.
+                </p>
+
+                <div class="slide-ctas">
+                    <a href="products.html?cat=gears" class="btn-slide-primary"
+                       style="background:#22c55e; box-shadow:0 0 28px rgba(34,197,94,.35)">
+                        Shop Gears →
+                    </a>
+                    <a href="products.html" class="btn-slide-ghost">Browse All</a>
+                </div>
+
+                <div class="slide-stats">
+                    <div><div class="stat-num">80+</div><div class="stat-lbl">Gear Sets</div></div>
+                    <div><div class="stat-num">12spd</div><div class="stat-lbl">Electronic</div></div>
+                    <div><div class="stat-num">Free</div><div class="stat-lbl">Shipping</div></div>
+                </div>
+            </div>
+
+            <div class="slide-right">
+                <div class="slide-glow"></div>
+                <div class="ring ring-lg"></div>
+                <div class="ring ring-md"></div>
+                <div class="ring ring-sm"></div>
+
+                <div class="feat-card">
+                    <!-- Shimano rear derailleur from our Gears folder -->
+                    <img src="Bikehub Image/Gears/rear105.webp"
+                         alt="Shimano 105 groupset"
+                         style="width:100%; height:120px; object-fit:cover; border-radius:12px"
+                         onerror="this.style.display='none'">
+
+                    <div class="feat-card-tag"   style="color:#22c55e">Top Seller</div>
+                    <div class="feat-card-name">Shimano 105 R7000</div>
+                    <div class="feat-card-price">$349</div>
+                    <a href="products.html?cat=gears" class="feat-card-btn" style="background:#22c55e">Shop Now</a>
+                </div>
+            </div>
+        </div><!-- end slide 2 -->
+
+
+        <!-- ── SLIDE 3 ── Purple theme — Helmets ── -->
+        <div class="slide slide-purple">
+
+            <div class="slide-left">
+                <div class="slide-badge" style="background:rgba(168,85,247,.1); border:1px solid rgba(168,85,247,.22)">
+                    <div class="badge-dot" style="background:#a855f7"></div>
+                    <span class="badge-text" style="color:#a855f7">Safety First</span>
+                </div>
+
+                <h1 class="slide-title">
+                    Protect Your <span style="color:#a855f7">Ride.</span>
+                </h1>
+
+                <p class="slide-sub">
+                    MIPS-certified helmets engineered for aerodynamic performance and maximum protection.
+                </p>
+
+                <div class="slide-ctas">
+                    <a href="products.html?cat=helmets" class="btn-slide-primary"
+                       style="background:#a855f7; box-shadow:0 0 28px rgba(168,85,247,.35)">
+                        Shop Helmets →
+                    </a>
+                    <a href="products.html" class="btn-slide-ghost">See All</a>
+                </div>
+
+                <div class="slide-stats">
+                    <div><div class="stat-num">24+</div><div class="stat-lbl">Helmets</div></div>
+                    <div><div class="stat-num">MIPS</div><div class="stat-lbl">Certified</div></div>
+                    <div><div class="stat-num">240g</div><div class="stat-lbl">Avg Weight</div></div>
+                </div>
+            </div>
+
+            <div class="slide-right">
+                <div class="slide-glow"></div>
+                <div class="ring ring-lg"></div>
+                <div class="ring ring-md"></div>
+                <div class="ring ring-sm"></div>
+
+                <div class="feat-card">
+                    <!-- S-Works helmet from our Helmet folder -->
+                    <img src="Bikehub Image/Helmet/s-works-helmet.webp"
+                         alt="S-Works Prevail helmet"
+                         style="width:100%; height:120px; object-fit:cover; border-radius:12px"
+                         onerror="this.style.display='none'">
+
+                    <div class="feat-card-tag"   style="color:#a855f7">Best Rated</div>
+                    <div class="feat-card-name">S-Works Prevail 3</div>
+                    <div class="feat-card-price">$299</div>
+                    <a href="products.html?cat=helmets" class="feat-card-btn" style="background:#a855f7">View Details</a>
+                </div>
+            </div>
+        </div><!-- end slide 3 -->
+
+
+    </div><!-- end slides-track -->
+
+
+    <!-- Dot navigation — onclick calls goTo(n) defined in script.js -->
+    <div class="carousel-dots">
+        <button class="dot active" onclick="goTo(0)" aria-label="Slide 1"></button>
+        <button class="dot"        onclick="goTo(1)" aria-label="Slide 2"></button>
+        <button class="dot"        onclick="goTo(2)" aria-label="Slide 3"></button>
+    </div>
+
+    <!-- Arrow buttons — call prev/next in script.js -->
+    <div class="carousel-arrows">
+        <button class="arrow-btn" id="prevBtn" aria-label="Previous">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="arrow-btn" id="nextBtn" aria-label="Next">
+            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+    </div>
+
+</section><!-- end carousel -->
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     BROWSE CATEGORIES SECTION
+     4 cards linking to products.html with ?cat= URL parameter
+     Each card uses our actual icon images from the icons/ folder
+     First card has class="dark" for the black background style
+     JS reads the ?cat= param on products page to filter the grid
+═══════════════════════════════════════════════════════════════ -->
+<section class="section">
+    <div class="container">
+
+        <div class="section-header">
+            <div>
+                <div class="section-title">Browse Categories</div>
+                <div class="section-sub">Find exactly what you need</div>
+            </div>
+            <a href="products.html" class="section-link">All Products →</a>
+        </div>
+
+        <div class="cat-grid">
+
+            <!-- Road Bikes — dark card style (black background) -->
+            <a href="products.html?cat=bikes" class="cat-card dark">
+                <img src="icons/racing-bike.png" alt="Road Bikes" class="cat-icon-img">
+                <div class="cat-name">Road Bikes</div>
+                <div class="cat-count">6 products</div>
+            </a>
+
+            <!-- Gear Sets -->
+            <a href="products.html?cat=gears" class="cat-card">
+                <img src="icons/crankset.png" alt="Gear Sets" class="cat-icon-img">
+                <div class="cat-name">Gear Sets</div>
+                <div class="cat-count">4 products</div>
+            </a>
+
+            <!-- Helmets -->
+            <a href="products.html?cat=helmets" class="cat-card">
+                <img src="icons/helmet.png" alt="Helmets" class="cat-icon-img">
+                <div class="cat-name">Helmets</div>
+                <div class="cat-count">4 products</div>
+            </a>
+
+            <!-- Accessories — using tool-box icon as closest match -->
+            <a href="products.html?cat=accessories" class="cat-card">
+                <img src="icons/tool-box.png" alt="Accessories" class="cat-icon-img">
+                <div class="cat-name">Accessories</div>
+                <div class="cat-count">3 products</div>
+            </a>
+
+        </div>
+    </div>
+</section><!-- end categories -->
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     FEATURED PRODUCTS
+     This grid is populated by JavaScript on page load.
+     renderProducts('featured-grid', ...) in script.js builds
+     HTML product cards and injects them into this empty div.
+
+     Each card shows: product image (from Bikehub Image/ folder),
+     category label, name, description, price, and Add to Cart button.
+
+     When the PHP backend is connected, this section will instead
+     use a PHP while loop: while($row = mysqli_fetch_assoc($result))
+═══════════════════════════════════════════════════════════════ -->
+<section class="section section-alt">
+    <div class="container">
+
+        <div class="section-header">
+            <div>
+                <div class="section-title">Featured Products</div>
+                <div class="section-sub">Handpicked for performance and style</div>
+            </div>
+            <a href="products.html" class="section-link">View All →</a>
+        </div>
+
+        <!-- JS fills this — see renderProducts() in script.js -->
+        <div class="product-grid" id="featured-grid">
+        </div>
+
+    </div>
+</section><!-- end featured products -->
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PROMO BANNER
+     Blue full-width banner with promo code message
+     ::before and ::after pseudo-elements add decorative circles
+═══════════════════════════════════════════════════════════════ -->
+<section class="section">
+    <div class="container">
+        <div class="promo-banner">
+            <div class="promo-text">
+                <div class="promo-title">Free Shipping on Orders Over $200</div>
+                <div class="promo-sub">Use code BIKEHUB at checkout. Valid on all road bikes and gear sets.</div>
+            </div>
+            <a href="products.html" class="btn-white">Shop the Deal →</a>
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     FOOTER
+     4-column grid: brand column + 3 link columns
+     Social buttons use inline SVG icons (no image files needed)
+     Bottom bar shows copyright + tech stack labels
+═══════════════════════════════════════════════════════════════ -->
+<footer>
+    <div class="container">
+
+        <div class="footer-top">
+
+            <!-- Brand column -->
+            <div>
+                <div class="footer-logo">Bike<span>Hub</span></div>
+                <p class="footer-desc">
+                    Your one-stop destination for premium cycling gear, bikes and accessories for every type of rider.
+                </p>
+                <div class="footer-socials">
+                    <a href="#" class="social-btn"><!-- Facebook SVG -->
+                        <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+                    </a>
+                    <a href="#" class="social-btn"><!-- Instagram SVG -->
+                        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                    </a>
+                    <a href="#" class="social-btn"><!-- Twitter/X SVG -->
+                        <svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5z"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Shop column -->
+            <div>
+                <div class="footer-col-title">Shop</div>
+                <ul class="footer-links">
+                    <li><a href="products.html?cat=bikes">Road Bikes</a></li>
+                    <li><a href="products.html?cat=gears">Gear Sets</a></li>
+                    <li><a href="products.html?cat=helmets">Helmets</a></li>
+                    <li><a href="products.html?cat=accessories">Accessories</a></li>
+                </ul>
+            </div>
+
+            <!-- Company column -->
+            <div>
+                <div class="footer-col-title">Company</div>
+                <ul class="footer-links">
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="about.html">Our Team</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="#">Careers</a></li>
+                </ul>
+            </div>
+
+            <!-- Help column -->
+            <div>
+                <div class="footer-col-title">Help</div>
+                <ul class="footer-links">
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="#">Shipping Info</a></li>
+                    <li><a href="#">Track Order</a></li>
+                </ul>
+            </div>
+
+        </div><!-- end footer-top grid -->
+
+        <!-- Copyright bar -->
+        <div class="footer-bottom">
+            <span class="footer-copy">© 2026 BikeHub. All rights reserved.</span>
+            <div class="footer-tags">
+                <span class="f-tag">PHP + MySQL</span>
+                <span class="f-tag">HTML5</span>
+                <span class="f-tag">CSS3</span>
+            </div>
+        </div>
+
+    </div>
+</footer>
+
+
+<!-- script.js loaded last — runs after all HTML is parsed -->
+<script src="script.js"></script>
+</body>
+</html>

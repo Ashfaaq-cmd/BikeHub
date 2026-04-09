@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BikeHub — Log In</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="navbar"><div class="container">
+    <a href="index.html" class="nav-logo">Bike<span>Hub</span></a>
+    <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li class="nav-dropdown"><a href="products.html">Products <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></a>
+            <div class="dropdown-menu">
+                <a href="products.html?cat=bikes" class="dropdown-item"><div class="dropdown-icon"><svg viewBox="0 0 24 24"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/></svg></div>Road Bikes</a>
+                <a href="products.html?cat=gears" class="dropdown-item"><div class="dropdown-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/></svg></div>Gear Sets</a>
+                <a href="products.html?cat=helmets" class="dropdown-item"><div class="dropdown-icon"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 017 7c0 5-7 13-7 13S5 14 5 9a7 7 0 017-7z"/></svg></div>Helmets</a>
+                <a href="products.html?cat=accessories" class="dropdown-item"><div class="dropdown-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/></svg></div>Accessories</a>
+                <div class="dropdown-sep"></div>
+                <a href="products.html" class="dropdown-item"><div class="dropdown-icon"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/></svg></div>All Products</a>
+            </div>
+        </li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+        <a href="register.html" class="btn-nav-blue">Sign Up</a>
+    </div>
+</div></nav>
+
+<div class="auth-layout">
+    <div class="auth-left">
+        <div class="auth-brand">Bike<span>Hub</span></div>
+        <h2 class="auth-heading">Welcome Back,<br>Rider.</h2>
+        <p class="auth-tagline">Log in to track your orders, manage your cart, and access exclusive member deals.</p>
+        <div class="auth-features">
+            <div class="auth-feat"><div class="feat-dot"></div><span>Full order history &amp; tracking</span></div>
+            <div class="auth-feat"><div class="feat-dot"></div><span>Cart synced across devices</span></div>
+            <div class="auth-feat"><div class="feat-dot"></div><span>Member-only discounts</span></div>
+        </div>
+    </div>
+    <div class="auth-right">
+        <div class="auth-title">Log In</div>
+        <div class="auth-subtitle">Enter your credentials to continue</div>
+        <!--wrap in PHP, add action="php/login.php" method="POST", add error display -->
+        <form id="login-form" action="php/login.php" method="POST">
+            <div class="form-group">
+                <label class="form-label" for="email">Email Address</label>
+                <input class="form-input" type="email" id="email" name="email" placeholder="you@email.com" required>
+            </div>
+            <div class="form-group" style="margin-top:16px">
+                <label class="form-label" for="password">Password</label>
+                <input class="form-input" type="password" id="password" name="password" placeholder="••••••••••" required>
+            </div>
+            <div style="margin-top:20px">
+                <button type="submit" name="login" class="form-submit">Log In →</button>
+            </div>
+        </form>
+        <div class="form-divider">or</div>
+        <div class="form-switch">Don't have an account? <a href="register.html">Create one →</a></div>
+    </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
