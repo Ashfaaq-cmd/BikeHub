@@ -183,6 +183,89 @@ function initForms() {
     }
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+
+    // ── CONTACT FORM ──
+    const form = document.getElementById("contact-form");
+
+    if (form) {
+        const formCard    = form.closest(".contact-form");
+        const formTitle   = formCard.querySelector(".contact-form-title");
+        const submitBtn   = form.querySelector(".form-submit");
+
+        function showMessage(type, text) {
+            // Remove any existing messages
+            formCard.querySelectorAll(".success-message, .error-message")
+                    .forEach(el => el.remove());
+
+            const msg = document.createElement("div");
+            msg.className = type === "success" ? "success-message" : "error-message";
+            msg.textContent = text;
+
+            // Insert message at the top of the card
+            formCard.insertBefore(msg, formCard.firstChild);
+            return msg;
+        }
+
+        // Handle messages left by a non-JS (fallback) redirect
+        const existingSuccess = formCard.querySelector(".success-message");
+        const existingError   = formCard.querySelector(".error-message");
+
+        if (existingSuccess || existingError) {
+            form.reset();
+            setTimeout(() => {
+                if (existingSuccess) existingSuccess.style.display = "none";
+                if (existingError)   existingError.style.display   = "none";
+            }, 4000);
+        }
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            // Button loading state
+            submitBtn.disabled    = true;
+            submitBtn.textContent = "Sending…";
+
+            const data = new FormData(form);
+
+            fetch(form.action, {
+                method: "POST",
+                headers: { "X-Requested-With": "XMLHttpRequest" },
+                body: data
+            })
+            .then(res => res.json())
+            .then(json => {
+                if (json.status === "success") {
+                    // Hide form content, show success
+                    formTitle.style.display = "none";
+                    form.style.display      = "none";
+
+                    const msg = showMessage("success", json.message);
+
+                    // After 4s restore the form
+                    setTimeout(() => {
+                        msg.style.display       = "none";
+                        form.reset();
+                        form.style.display      = "";
+                        formTitle.style.display = "";
+                    }, 4000);
+
+                } else {
+                    // Show inline error, keep form visible
+                    showMessage("error", json.message);
+                }
+            })
+            .catch(() => {
+                showMessage("error", "Network error. Please check your connection and try again.");
+            })
+            .finally(() => {
+                submitBtn.disabled    = false;
+                submitBtn.textContent = "Send Message →";
+            });
+        });
+    }
+});
+
 
 // ================================================================
 // JS 6 — FILE UPLOAD IMAGE PREVIEW (register page)

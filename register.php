@@ -11,18 +11,18 @@
     <a href="index.php" class="nav-logo">Bike<span>Hub</span></a>
     <ul class="nav-links">
         <li><a href="index.php">Home</a></li>
-        <li class="nav-dropdown"><a href="php/products.php">Products <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></a>
+        <li class="nav-dropdown"><a href="products.php">Products <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></a>
             <div class="dropdown-menu">
-                <a href="php/products.php?cat=bikes"       class="dropdown-item">Road Bikes</a>
-                <a href="php/products.php?cat=gears"       class="dropdown-item">Gear Sets</a>
-                <a href="php/products.php?cat=helmet"      class="dropdown-item">Helmets</a>
-                <a href="php/products.php?cat=accessories" class="dropdown-item">Accessories</a>
+                <a href="products.php?cat=bikes"       class="dropdown-item">Road Bikes</a>
+                <a href="products.php?cat=gears"       class="dropdown-item">Gear Sets</a>
+                <a href="products.php?cat=helmet"      class="dropdown-item">Helmets</a>
+                <a href="products.php?cat=accessories" class="dropdown-item">Accessories</a>
                 <div class="dropdown-sep"></div>
-                <a href="php/products.php"                 class="dropdown-item">All Products</a>
+                <a href="products.php"                 class="dropdown-item">All Products</a>
             </div>
         </li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="contact.html">Contact</a></li>
+        <li><a href="about.php">About</a></li>
+        <li><a href="contact.php">Contact</a></li>
     </ul>
     <div class="nav-right"><a href="login.php" class="btn-nav-outline">Log In</a></div>
 </div></nav>
