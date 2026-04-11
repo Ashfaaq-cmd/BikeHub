@@ -1,28 +1,43 @@
 <?php
-// php/cart.php — session-protected cart page inside php/ folder
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: ../login.html');
+    header('Location: login.php');
     exit;
 }
 
-require_once 'db.php';
+require_once __DIR__ . '/php/db.php'; 
 
-//  Rebuild cart from session with fresh DB prices 
+// Image path helper 
+function img_path(string $table, string $category, string $filename): string {
+    if ($table === 'bikes') {
+        $sub = 'Bikes';
+    } else {
+        $map = [
+            'gears'       => 'Gears',
+            'helmet'      => 'Helmet',
+            'accessories' => 'Accessories',
+            'clothing'    => 'Clothing',
+        ];
+        $sub = $map[strtolower($category)] ?? 'Gears';
+    }
+    return 'Bikehub Image/' . $sub . '/' . htmlspecialchars($filename, ENT_QUOTES, 'UTF-8');
+}
+
+function safe($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
+
+// Rebuild cart with fresh DB prices
 $cart_items = [];
 $subtotal   = 0.0;
 $total_qty  = 0;
 
 if (!empty($_SESSION['cart'])) {
     foreach ($_SESSION['cart'] as $key => $item) {
-        // item['type'] is 'bikes' or 'products'
         $table = in_array($item['type'], ['bikes', 'products']) ? $item['type'] : 'products';
         $col   = ($table === 'bikes') ? 'brand' : 'category';
 
         $stmt = mysqli_prepare($conn,
-            "SELECT id, name, $col AS subtitle, price, sale_price, image
-             FROM `$table` WHERE id = ? LIMIT 1"
+            "SELECT id, name, $col AS subtitle, price, sale_price, image FROM `$table` WHERE id = ? LIMIT 1"
         );
         mysqli_stmt_bind_param($stmt, 'i', $item['id']);
         mysqli_stmt_execute($stmt);
@@ -30,15 +45,12 @@ if (!empty($_SESSION['cart'])) {
         mysqli_stmt_close($stmt);
 
         if ($row) {
-            // Always use sale_price if available
             $unit = ($row['sale_price'] > 0) ? (float)$row['sale_price'] : (float)$row['price'];
             $_SESSION['cart'][$key]['price'] = $unit;
-
-            $qty   = (int)$item['qty'];
-            $line  = $unit * $qty;
+            $qty  = (int)$item['qty'];
+            $line = $unit * $qty;
             $subtotal  += $line;
             $total_qty += $qty;
-
             $cart_items[] = [
                 'key'      => $key,
                 'id'       => $item['id'],
@@ -57,8 +69,6 @@ if (!empty($_SESSION['cart'])) {
 $shipping = ($subtotal > 0 && $subtotal < 5000) ? 250 : 0;
 $tax      = round($subtotal * 0.08, 2);
 $total    = $subtotal + $shipping + $tax;
-
-function safe($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -66,10 +76,11 @@ function safe($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BikeHub — Your Cart</title>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
+
 <nav class="navbar"><div class="container">
     <a href="index.php" class="nav-logo">Bike<span>Hub</span></a>
     <ul class="nav-links">
@@ -82,13 +93,14 @@ function safe($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
                 <a href="products.php"                 class="dropdown-item">All Products</a>
             </div>
         </li>
-        <li><a href="../about.html">About</a></li>
+        <li><a href="about.php">About</a></li>
+        <li><a href="contact.php">Contact</a></li>
     </ul>
     <div class="nav-right">
         <span style="color:var(--grey-l);font-size:14px;margin-right:4px">
             Hi, <?= safe(explode(' ', $_SESSION['user_name'])[0]) ?>
         </span>
-        <a href="logout.php" class="btn-nav-blue">Log Out</a>
+        <a href="php/logout.php" class="btn-nav-blue">Log Out</a>
     </div>
 </div></nav>
 
@@ -105,8 +117,6 @@ function safe($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
 
         <?php else: ?>
         <div class="cart-layout">
-
-            <!-- Cart items -->
             <div>
                 <div class="cart-heading">
                     Your Cart
@@ -116,37 +126,30 @@ function safe($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
                 </div>
 
                 <div class="cart-items-list" id="cart-items-list">
-                    <?php foreach ($cart_items as $item): ?>
+                    <?php foreach ($cart_items as $item):
+                        $src = img_path($item['type'], $item['subtitle'], $item['image']);
+                    ?>
                     <div class="cart-item" id="row-<?= safe($item['key']) ?>">
-
                         <div class="cart-item-img">
-                            <img src="../Bikehub Image/<?= safe($item['image']) ?>"
-                                 alt="<?= safe($item['name']) ?>"
+                            <img src="<?= $src ?>" alt="<?= safe($item['name']) ?>"
                                  onerror="this.style.display='none'">
                         </div>
-
                         <div class="cart-info">
                             <div class="cart-name"><?= safe($item['name']) ?></div>
                             <div class="cart-sub">
-                                <?= safe(ucfirst($item['subtitle'])) ?>
-                                &middot; Rs <?= number_format($item['price'], 2) ?> each
+                                <?= safe(ucfirst($item['subtitle'])) ?> &middot;
+                                Rs <?= number_format($item['price'], 2) ?> each
                             </div>
                             <div class="qty-row">
-                                <button class="qty-btn"
-                                        onclick="cartUpdate('<?= safe($item['key']) ?>', 'decrease')">−</button>
+                                <button class="qty-btn" onclick="cartUpdate('<?= safe($item['key']) ?>', 'decrease')">−</button>
                                 <span class="qty-num" id="qty-<?= safe($item['key']) ?>"><?= $item['qty'] ?></span>
-                                <button class="qty-btn"
-                                        onclick="cartUpdate('<?= safe($item['key']) ?>', 'increase')">+</button>
+                                <button class="qty-btn" onclick="cartUpdate('<?= safe($item['key']) ?>', 'increase')">+</button>
                             </div>
                         </div>
-
                         <div class="cart-price" id="line-<?= safe($item['key']) ?>">
                             Rs <?= number_format($item['line'], 2) ?>
                         </div>
-
-                        <button class="cart-remove"
-                                onclick="cartUpdate('<?= safe($item['key']) ?>', 'remove')"
-                                title="Remove">×</button>
+                        <button class="cart-remove" onclick="cartUpdate('<?= safe($item['key']) ?>', 'remove')" title="Remove">×</button>
                     </div>
                     <?php endforeach; ?>
                 </div>
@@ -154,7 +157,6 @@ function safe($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
                 <a href="products.php" class="continue-link">← Continue Shopping</a>
             </div>
 
-            <!-- Order summary -->
             <div class="order-summary">
                 <div class="summary-title">Order Summary</div>
                 <div class="summary-row"><span>Subtotal</span><span id="summary-subtotal">Rs <?= number_format($subtotal, 2) ?></span></div>
@@ -186,17 +188,16 @@ function safe($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
                     SSL encrypted · Safe checkout
                 </div>
             </div>
-
         </div>
         <?php endif; ?>
 
     </div>
 </div>
 
-<script src="../script.js"></script>
+<script src="script.js"></script>
 <script>
 function cartUpdate(key, action) {
-    $.post('update_cart.php', { key: key, action: action })
+    $.post('php/update_cart.php', { key: key, action: action })
      .done(function (res) {
         if (!res.success) return;
         if (res.removed) {
@@ -214,13 +215,12 @@ function cartUpdate(key, action) {
         if (res.cart_count === 0) setTimeout(function () { location.reload(); }, 400);
      });
 }
-
 function applyPromo() {
     var code = $('#promo-input').val().trim().toUpperCase();
     var $msg = $('#promo-msg').show();
-    if (code === 'BIKEHUB') $msg.css('color','#22c55e').text('✓ Free shipping applied!');
-    else if (!code)         $msg.css('color','red').text('Please enter a promo code.');
-    else                    $msg.css('color','red').text('Invalid promo code.');
+    if (code === 'BIKEHUB')  $msg.css('color','#22c55e').text('✓ Free shipping applied!');
+    else if (!code)          $msg.css('color','red').text('Please enter a promo code.');
+    else                     $msg.css('color','red').text('Invalid promo code.');
 }
 </script>
 </body>

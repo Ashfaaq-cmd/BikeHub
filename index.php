@@ -1,68 +1,83 @@
 <?php
-//  DB tables: bikes | products 
-
+// index.php — ROOT level
+// FIX: img_path() adds the correct subfolder (Bikes/ Gears/ Helmet/ etc.)
 session_start();
 require_once 'php/db.php';
 
-//  Carousel: 2 bikes + 1 product 
+// ── Image path helper ─────────────────────────────────────────
+// DB only stores the filename (e.g. bmc.jpeg).
+// We must prepend the correct subfolder depending on table + category.
+// NOTE: your folder is called "Accesories" (one 's') — must match exactly.
+function img_path(string $table, string $category, string $filename): string {
+    if ($table === 'bikes') {
+        $sub = 'Bikes';
+    } else {
+        $map = [
+            'gears'       => 'Gears',
+            'helmet'      => 'Helmet',
+            'accessories' => 'Accesories',   // ← matches your actual folder name
+            'clothing'    => 'Clothing',
+        ];
+        $sub = $map[strtolower($category)] ?? 'Gears';
+    }
+    return 'Bikehub Image/' . $sub . '/' . htmlspecialchars($filename, ENT_QUOTES, 'UTF-8');
+}
+
+function safe($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
+
+// ── Carousel: 2 bikes + 1 product ────────────────────────────
 $bikes_carousel = mysqli_fetch_all(
     mysqli_query($conn,
-        "SELECT id, name, price, sale_price, image, 'bikes' AS table_name
+        "SELECT id, name, price, sale_price, image,
+                'bikes' AS table_name, 'bikes' AS cat_key
          FROM bikes ORDER BY id DESC LIMIT 2"),
     MYSQLI_ASSOC
 );
 $products_carousel = mysqli_fetch_all(
     mysqli_query($conn,
-        "SELECT id, name, price, sale_price, image, 'products' AS table_name
+        "SELECT id, name, price, sale_price, image,
+                'products' AS table_name, category AS cat_key
          FROM products ORDER BY id LIMIT 1"),
     MYSQLI_ASSOC
 );
 $carousel_items = array_merge($bikes_carousel, $products_carousel);
 
-// Featured products: 3 bikes + 2 products 
+// ── Featured: 3 bikes + 2 products ───────────────────────────
 $featured_bikes = mysqli_fetch_all(
     mysqli_query($conn,
         "SELECT id, name, brand AS subtitle, price, sale_price, image,
-                'bikes' AS table_name, 'NEW' AS badge
+                'bikes' AS table_name, 'bikes' AS cat_key, 'NEW' AS badge
          FROM bikes ORDER BY id DESC LIMIT 3"),
     MYSQLI_ASSOC
 );
 $featured_products = mysqli_fetch_all(
     mysqli_query($conn,
         "SELECT id, name, category AS subtitle, price, sale_price, image,
-                'products' AS table_name, 'SALE' AS badge
+                'products' AS table_name, category AS cat_key, 'SALE' AS badge
          FROM products ORDER BY id LIMIT 2"),
     MYSQLI_ASSOC
 );
 $featured = array_merge($featured_bikes, $featured_products);
 
-//  Category counts 
+// ── Category counts ───────────────────────────────────────────
 $bike_count = mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM bikes"))[0];
 $gear_count = mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM products WHERE category='gears'"))[0];
 $hel_count  = mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM products WHERE category='helmet'"))[0];
 $acc_count  = mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM products WHERE category='accessories'"))[0];
 
-// Cart badge count 
-$cart_count = 0;
-if (isset($_SESSION['cart'])) {
-    $cart_count = array_sum(array_column($_SESSION['cart'], 'qty'));
-}
-
-function safe($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
+$cart_count = isset($_SESSION['cart']) ? array_sum(array_column($_SESSION['cart'], 'qty')) : 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BikeHub — Ride Faster. Gear Smarter.</title>
-    <!-- ../ goes up from php/ to the root where style.css lives -->
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
 
-<!--  NAVBAR  -->
 <nav class="navbar">
     <div class="container">
         <a href="index.php" class="nav-logo">Bike<span>Hub</span></a>
@@ -76,11 +91,11 @@ function safe($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
                     <a href="products.php?cat=helmet"      class="dropdown-item">Helmets</a>
                     <a href="products.php?cat=accessories" class="dropdown-item">Accessories</a>
                     <div class="dropdown-sep"></div>
-                    <a href="products.php"                 class="dropdown-item">All Products</a>
+                    <a href="products.php" class="dropdown-item">All Products</a>
                 </div>
             </li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="contact.html">Contact</a></li>
+            <li><a href="about.php">About</a></li>
+            <li><a href="contact.php">Contact</a></li>
         </ul>
         <div class="nav-right">
             <a href="cart.php" class="cart-link">
@@ -88,9 +103,7 @@ function safe($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
                 <span class="cart-badge" id="cart-count"><?= $cart_count ?></span>
             </a>
             <?php if (isset($_SESSION['user_id'])): ?>
-                <span style="color:var(--grey-l);font-size:14px;margin-right:4px">
-                    Hi, <?= safe(explode(' ', $_SESSION['user_name'])[0]) ?>
-                </span>
+                <span style="color:var(--grey-l);font-size:14px;margin-right:4px">Hi, <?= safe(explode(' ', $_SESSION['user_name'])[0]) ?></span>
                 <a href="php/logout.php" class="btn-nav-outline">Log Out</a>
             <?php else: ?>
                 <a href="login.php"    class="btn-nav-outline">Log In</a>
@@ -100,17 +113,16 @@ function safe($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
     </div>
 </nav>
 
-<!-- HERO CAROUSEL  -->
+<!-- HERO CAROUSEL -->
 <section class="carousel-section">
     <div class="carousel-grid-bg"></div>
     <div class="slides-track" id="slidesTrack">
-
         <?php
-        $colors      = ['#1a6bff',      '#22c55e',      '#a855f7'];
-        $rgb         = ['26,107,255',   '34,197,94',    '168,85,247'];
-        $slide_class = ['slide-blue',   'slide-green',  'slide-purple'];
-        $themes      = ['2026 Season Drop', 'New Arrivals', 'Safety First'];
-        $tag_labels  = ['Featured Bike',    'Top Seller',   'Best Rated'];
+        $colors      = ['#1a6bff',    '#22c55e',   '#a855f7'];
+        $rgb         = ['26,107,255', '34,197,94', '168,85,247'];
+        $slide_class = ['slide-blue', 'slide-green','slide-purple'];
+        $themes      = ['2026 Season Drop','New Arrivals','Safety First'];
+        $tag_labels  = ['Featured Bike',   'Top Seller',  'Best Rated'];
 
         foreach ($carousel_items as $idx => $item):
             $c    = $colors[$idx % 3];
@@ -119,25 +131,18 @@ function safe($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
             $th   = $themes[$idx % 3];
             $tag  = $tag_labels[$idx % 3];
             $disp = ($item['sale_price'] > 0) ? $item['sale_price'] : $item['price'];
+            $src  = img_path($item['table_name'], $item['cat_key'], $item['image']);
         ?>
         <div class="slide <?= $sc ?>">
             <div class="slide-left">
-                <div class="slide-badge"
-                     style="background:rgba(<?= $r ?>,.1);border:1px solid rgba(<?= $r ?>,.22)">
+                <div class="slide-badge" style="background:rgba(<?= $r ?>,.1);border:1px solid rgba(<?= $r ?>,.22)">
                     <div class="badge-dot" style="background:<?= $c ?>"></div>
                     <span class="badge-text" style="color:<?= $c ?>"><?= $th ?></span>
                 </div>
-                <h1 class="slide-title">
-                    Premium <span style="color:<?= $c ?>"><?= safe($item['name']) ?></span>
-                </h1>
-                <p class="slide-sub">
-                    Discover <?= safe($item['name']) ?> from our collection. Engineered for performance.
-                </p>
+                <h1 class="slide-title">Premium <span style="color:<?= $c ?>"><?= safe($item['name']) ?></span></h1>
+                <p class="slide-sub">Discover <?= safe($item['name']) ?> — engineered for performance.</p>
                 <div class="slide-ctas">
-                    <a href="products.php" class="btn-slide-primary"
-                       style="background:<?= $c ?>;box-shadow:0 0 28px rgba(<?= $r ?>,.35)">
-                        Shop Now →
-                    </a>
+                    <a href="products.php" class="btn-slide-primary" style="background:<?= $c ?>;box-shadow:0 0 28px rgba(<?= $r ?>,.35)">Shop Now →</a>
                     <a href="products.php" class="btn-slide-ghost">View All</a>
                 </div>
                 <div class="slide-stats">
@@ -150,9 +155,7 @@ function safe($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
                 <div class="slide-glow"></div>
                 <div class="ring ring-lg"></div><div class="ring ring-md"></div><div class="ring ring-sm"></div>
                 <div class="feat-card">
-                    <!-- ../ goes up from php/ to root, then into Bikehub Image/ -->
-                    <img src="Bikehub Image/<?= safe($item['image']) ?>"
-                         alt="<?= safe($item['name']) ?>"
+                    <img src="<?= $src ?>" alt="<?= safe($item['name']) ?>"
                          style="width:100%;height:120px;object-fit:cover;border-radius:12px"
                          onerror="this.style.display='none'">
                     <div class="feat-card-tag" style="color:<?= $c ?>"><?= $tag ?></div>
@@ -163,13 +166,10 @@ function safe($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
             </div>
         </div>
         <?php endforeach; ?>
-
     </div>
-
     <div class="carousel-dots">
         <?php foreach ($carousel_items as $idx => $item): ?>
-            <button class="dot <?= $idx === 0 ? 'active' : '' ?>"
-                    onclick="goTo(<?= $idx ?>)" aria-label="Slide <?= $idx+1 ?>"></button>
+            <button class="dot <?= $idx === 0 ? 'active' : '' ?>" onclick="goTo(<?= $idx ?>)" aria-label="Slide <?= $idx+1 ?>"></button>
         <?php endforeach; ?>
     </div>
     <div class="carousel-arrows">
@@ -178,64 +178,41 @@ function safe($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
     </div>
 </section>
 
-<!--  BROWSE CATEGORIES  -->
+<!-- BROWSE CATEGORIES -->
 <section class="section">
     <div class="container">
         <div class="section-header">
-            <div>
-                <div class="section-title">Browse Categories</div>
-                <div class="section-sub">Find exactly what you need</div>
-            </div>
+            <div><div class="section-title">Browse Categories</div><div class="section-sub">Find exactly what you need</div></div>
             <a href="products.php" class="section-link">All Products →</a>
         </div>
         <div class="cat-grid">
-            <a href="products.php?cat=bikes"       class="cat-card dark">
-                <img src="icons/racing-bike.png" alt="Road Bikes" class="cat-icon-img" onerror="this.style.display='none'">
-                <div class="cat-name">Road Bikes</div>
-                <div class="cat-count"><?= $bike_count ?> products</div>
-            </a>
-            <a href="products.php?cat=gears"       class="cat-card">
-                <img src="icons/crankset.png" alt="Gear Sets" class="cat-icon-img" onerror="this.style.display='none'">
-                <div class="cat-name">Gear Sets</div>
-                <div class="cat-count"><?= $gear_count ?> products</div>
-            </a>
-            <a href="products.php?cat=helmet"      class="cat-card">
-                <img src="icons/helmet.png" alt="Helmets" class="cat-icon-img" onerror="this.style.display='none'">
-                <div class="cat-name">Helmets</div>
-                <div class="cat-count"><?= $hel_count ?> products</div>
-            </a>
-            <a href="products.php?cat=accessories" class="cat-card">
-                <img src="icons/tool-box.png" alt="Accessories" class="cat-icon-img" onerror="this.style.display='none'">
-                <div class="cat-name">Accessories</div>
-                <div class="cat-count"><?= $acc_count ?> products</div>
-            </a>
+            <a href="products.php?cat=bikes"       class="cat-card dark"><img src="icons/racing-bike.png" alt="" class="cat-icon-img" onerror="this.style.display='none'"><div class="cat-name">Road Bikes</div><div class="cat-count"><?= $bike_count ?> products</div></a>
+            <a href="products.php?cat=gears"       class="cat-card"><img src="icons/crankset.png" alt="" class="cat-icon-img" onerror="this.style.display='none'"><div class="cat-name">Gear Sets</div><div class="cat-count"><?= $gear_count ?> products</div></a>
+            <a href="products.php?cat=helmet"      class="cat-card"><img src="icons/helmet.png" alt="" class="cat-icon-img" onerror="this.style.display='none'"><div class="cat-name">Helmets</div><div class="cat-count"><?= $hel_count ?> products</div></a>
+            <a href="products.php?cat=accessories" class="cat-card"><img src="icons/tool-box.png" alt="" class="cat-icon-img" onerror="this.style.display='none'"><div class="cat-name">Accessories</div><div class="cat-count"><?= $acc_count ?> products</div></a>
         </div>
     </div>
 </section>
 
-<!--  FEATURED PRODUCTS  -->
+<!-- FEATURED PRODUCTS -->
 <section class="section section-alt">
     <div class="container">
         <div class="section-header">
-            <div>
-                <div class="section-title">Featured Products</div>
-                <div class="section-sub">Handpicked for performance and style</div>
-            </div>
+            <div><div class="section-title">Featured Products</div><div class="section-sub">Handpicked for performance and style</div></div>
             <a href="products.php" class="section-link">View All →</a>
         </div>
-
         <div class="product-grid">
             <?php foreach ($featured as $p):
-                $badge_class  = $p['badge'] === 'NEW' ? 'badge-new' : 'badge-sale';
-                $display_price = ($p['sale_price'] > 0) ? $p['sale_price'] : $p['price'];
+                $on_sale       = ($p['sale_price'] > 0 && $p['sale_price'] != $p['price']);
+                $badge         = $on_sale ? 'SALE' : $p['badge'];
+                $badge_class   = ($badge === 'NEW') ? 'badge-new' : 'badge-sale';
+                $display_price = $on_sale ? $p['sale_price'] : $p['price'];
+                $src           = img_path($p['table_name'], $p['cat_key'], $p['image']);
             ?>
             <div class="product-card">
                 <div class="product-img">
-                    <?php if ($p['badge']): ?>
-                        <span class="product-badge <?= $badge_class ?>"><?= $p['badge'] ?></span>
-                    <?php endif; ?>
-                    <img src="Bikehub Image/<?= safe($p['image']) ?>"
-                         alt="<?= safe($p['name']) ?>"
+                    <?php if ($badge): ?><span class="product-badge <?= $badge_class ?>"><?= $badge ?></span><?php endif; ?>
+                    <img src="<?= $src ?>" alt="<?= safe($p['name']) ?>"
                          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                     <div class="product-img-placeholder" style="display:none">
                         <svg viewBox="0 0 80 60"><circle cx="60" cy="45" r="12" stroke="#8896b8" stroke-width="1.4" fill="none"/><circle cx="18" cy="45" r="12" stroke="#8896b8" stroke-width="1.4" fill="none"/></svg>
@@ -246,9 +223,7 @@ function safe($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
                     <div class="product-name"><?= safe($p['name']) ?></div>
                     <div class="product-footer">
                         <div class="product-price">
-                            <?php if ($p['sale_price'] > 0 && $p['sale_price'] != $p['price']): ?>
-                                <span class="product-old-price">Rs <?= number_format($p['price'], 2) ?></span>
-                            <?php endif; ?>
+                            <?php if ($on_sale): ?><span class="product-old-price">Rs <?= number_format($p['price'], 2) ?></span><?php endif; ?>
                             Rs <?= number_format($display_price, 2) ?>
                         </div>
                         <button class="add-btn php-add-btn"
@@ -265,7 +240,7 @@ function safe($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
     </div>
 </section>
 
-<!--  PROMO BANNER  -->
+<!-- PROMO BANNER -->
 <section class="section">
     <div class="container">
         <div class="promo-banner">
@@ -278,12 +253,12 @@ function safe($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
     </div>
 </section>
 
-<!-- FOOTER  -->
+<!-- FOOTER -->
 <footer><div class="container">
     <div class="footer-top">
         <div>
             <div class="footer-logo">Bike<span>Hub</span></div>
-            <p class="footer-desc">Your one-stop destination for premium cycling gear, bikes and accessories for every type of rider.</p>
+            <p class="footer-desc">Your one-stop destination for premium cycling gear, bikes and accessories.</p>
             <div class="footer-socials">
                 <a href="#" class="social-btn"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
                 <a href="#" class="social-btn"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/></svg></a>
@@ -291,29 +266,19 @@ function safe($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
             </div>
         </div>
         <div><div class="footer-col-title">Shop</div><ul class="footer-links"><li><a href="products.php?cat=bikes">Road Bikes</a></li><li><a href="products.php?cat=gears">Gear Sets</a></li><li><a href="products.php?cat=helmet">Helmets</a></li><li><a href="products.php?cat=accessories">Accessories</a></li></ul></div>
-        <div><div class="footer-col-title">Company</div><ul class="footer-links"><li><a href="about.html">About Us</a></li><li><a href="about.html">Our Team</a></li><li><a href="contact.html">Contact</a></li><li><a href="#">Careers</a></li></ul></div>
+        <div><div class="footer-col-title">Company</div><ul class="footer-links"><li><a href="about.php">About Us</a></li><li><a href="about.php">Our Team</a></li><li><a href="contact.php">Contact</a></li><li><a href="#">Careers</a></li></ul></div>
         <div><div class="footer-col-title">Help</div><ul class="footer-links"><li><a href="#">FAQ</a></li><li><a href="#">Returns</a></li><li><a href="#">Shipping Info</a></li><li><a href="#">Track Order</a></li></ul></div>
     </div>
-    <div class="footer-bottom">
-        <span class="footer-copy">© 2026 BikeHub. All rights reserved.</span>
-    </div>
+    <div class="footer-bottom"><span class="footer-copy">© 2026 BikeHub. All rights reserved.</span></div>
 </div></footer>
-
 
 <script src="script.js"></script>
 <script>
 $(document).on('click', '.php-add-btn', function () {
-    var btn   = $(this);
-    var id    = btn.data('id');
-    var table = btn.data('table');
-    var name  = btn.data('name');
-
+    var btn = $(this), id = btn.data('id'), table = btn.data('table'), name = btn.data('name');
     $.post('php/add_to_cart.php', { product_id: id, table_name: table, qty: 1 })
      .done(function (res) {
-        if (res.success) {
-            $('#cart-count').text(res.cart_count).show();
-            showToast(name + ' added to cart ✓');
-        }
+        if (res.success) { $('#cart-count').text(res.cart_count).show(); showToast(name + ' added to cart ✓'); }
      });
 });
 </script>

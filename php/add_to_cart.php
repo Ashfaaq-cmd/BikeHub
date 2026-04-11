@@ -47,7 +47,7 @@ if (isset($_SESSION['cart'][$key])) {
         'type'  => $table_name,   // 'bikes' or 'products'
         'name'  => $product['name'],
         'price' => $price,
-        'img'   => $product['image'],
+        'image'   => $product['image'],
         'qty'   => $qty,
     ];
 }

@@ -54,7 +54,7 @@
                          onerror="this.parentElement.innerHTML='<div class=about-img-placeholder style=height:200px></div>'">
                 </div>
                 <div class="about-img-box wide">
-                    <img src="Bikehub Image/Rider.jpg" alt="Rider"
+                    <img src="Bikehub Image/images.jpeg" alt="Rider"
                          onerror="this.parentElement.innerHTML='<div class=about-img-placeholder style=height:160px></div>'">
                 </div>
             </div>
@@ -77,7 +77,7 @@
                 </a>
             </div>
             <div class="mission-photo">
-                <img src="Bikehub Image/Rider.jpg" alt="Rider on road bike"
+                <img src="Bikehub Image/images.jpeg" alt="Rider on road bike"
                      onerror="this.parentElement.innerHTML='<div class=mission-photo-placeholder><svg width=80 height=80 viewBox=&quot;0 0 24 24&quot; fill=none stroke=&quot;#8896b8&quot; stroke-width=1><path d=&quot;M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2&quot;/><circle cx=12 cy=7 r=4/></svg></div>'">
             </div>
         </div>
