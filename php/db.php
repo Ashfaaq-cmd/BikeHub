@@ -4,9 +4,9 @@ define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', 'admin'); // Change this to your actual database password... default is: "" -> no password
 define('DB_NAME', 'bikehub_db');
-define("Port", "3307");
+define("Port", 3307);
 //Uncomment the line below and comment the line above if you use port 3306 instead of 3307
-//define("Port", "3306");
+//define("Port", 3306);
 
 
 // Create connection

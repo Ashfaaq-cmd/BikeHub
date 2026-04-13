@@ -1,13 +1,8 @@
 <?php
-// index.php — ROOT level
-// FIX: img_path() adds the correct subfolder (Bikes/ Gears/ Helmet/ etc.)
+
 session_start();
 require_once 'php/db.php';
 
-// ── Image path helper ─────────────────────────────────────────
-// DB only stores the filename (e.g. bmc.jpeg).
-// We must prepend the correct subfolder depending on table + category.
-// NOTE: your folder is called "Accesories" (one 's') — must match exactly.
 function img_path(string $table, string $category, string $filename): string {
     if ($table === 'bikes') {
         $sub = 'Bikes';
@@ -15,7 +10,7 @@ function img_path(string $table, string $category, string $filename): string {
         $map = [
             'gears'       => 'Gears',
             'helmet'      => 'Helmet',
-            'accessories' => 'Accesories',   // ← matches your actual folder name
+            'accessories' => 'Accessories',   
             'clothing'    => 'Clothing',
         ];
         $sub = $map[strtolower($category)] ?? 'Gears';
@@ -25,7 +20,7 @@ function img_path(string $table, string $category, string $filename): string {
 
 function safe($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
 
-// ── Carousel: 2 bikes + 1 product ────────────────────────────
+// Carousel: 2 bikes + 1 product
 $bikes_carousel = mysqli_fetch_all(
     mysqli_query($conn,
         "SELECT id, name, price, sale_price, image,
@@ -42,7 +37,7 @@ $products_carousel = mysqli_fetch_all(
 );
 $carousel_items = array_merge($bikes_carousel, $products_carousel);
 
-// ── Featured: 3 bikes + 2 products ───────────────────────────
+//  Featured: 3 bikes + 2 products
 $featured_bikes = mysqli_fetch_all(
     mysqli_query($conn,
         "SELECT id, name, brand AS subtitle, price, sale_price, image,
@@ -59,7 +54,7 @@ $featured_products = mysqli_fetch_all(
 );
 $featured = array_merge($featured_bikes, $featured_products);
 
-// ── Category counts ───────────────────────────────────────────
+//Category counts
 $bike_count = mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM bikes"))[0];
 $gear_count = mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM products WHERE category='gears'"))[0];
 $hel_count  = mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM products WHERE category='helmet'"))[0];

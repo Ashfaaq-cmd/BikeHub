@@ -549,47 +549,6 @@ footer { background: var(--black); padding: 52px 0 24px; }
 .contact-item-val   { font-size: 13px; color: var(--grey); }
 .contact-form { background: #fff; border-radius: 20px; padding: 36px; border: 1px solid var(--grey-l); display: flex; flex-direction: column; gap: 18px; }
 .contact-form-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--text); }
-.success-message,
-.error-message {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    width: 100%;
-    padding: 14px 18px;
-    border-radius: 12px;
-
-    font-size: 14px;
-    font-weight: 500;
-
-    margin-bottom: 14px;
-    animation: fadeIn 0.3s ease;
-}
-
-/* SUCCESS */
-.success-message {
-    background: #e8f8f1;
-    color: #0f7a52;
-    border: 1px solid #bfead9;
-}
-
-/* ERROR */
-.error-message {
-    background: #fdecec;
-    color: #a93232;
-    border: 1px solid #f5bcbc;
-}
-
-/* ICONS */
-.success-message::before {
-    content: "✔";
-    margin-right: 6px;
-}
-
-.error-message::before {
-    content: "⚠";
-    margin-right: 6px;
-}
 
 /* ── ABOUT ── */
 .about-hero-sec {

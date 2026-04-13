@@ -1,7 +1,7 @@
 <?php
 // php/login.php
 // ─────────────────────────────────────────────────────────────
-//  Handles login.html form.
+//  Handles login.php form.
 //  DB columns: fname, lname, email, password, profile_img
 // ─────────────────────────────────────────────────────────────
 
@@ -13,7 +13,7 @@ if (isset($_SESSION['user_id'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['login'])) {
-    header('Location: ../login.html');
+    header('Location: ../login.php');
     exit;
 }
 
@@ -25,13 +25,13 @@ $password = $_POST['password']      ?? '';
 //  Validation 
 if (empty($email) || empty($password)) {
     $_SESSION['login_error'] = 'Email and password are required.';
-    header('Location: ../login.html');
+    header('Location: ../login.php');
     exit;
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $_SESSION['login_error'] = 'Please enter a valid email address.';
-    header('Location: ../login.html');
+    header('Location: ../login.php');
     exit;
 }
 
@@ -48,7 +48,7 @@ mysqli_stmt_close($stmt);
 // Verify password 
 if (!$user || !password_verify($password, $user['password'])) {
     $_SESSION['login_error'] = 'Incorrect email or password.';
-    header('Location: ../login.html');
+    header('Location: ../login.php');
     exit;
 }
 
