@@ -113,7 +113,7 @@ if (isset($_FILES['profile_img']) && $_FILES['profile_img']['error'] !== UPLOAD_
 //  Hash password and INSERT user 
 $hashed = password_hash($password, PASSWORD_BCRYPT);
 
-// DB columns are fname, lname — NOT firstname/lastname
+
 $stmt = mysqli_prepare($conn,
     'INSERT INTO users (fname, lname, email, password, profile_img) VALUES (?, ?, ?, ?, ?)'
 );

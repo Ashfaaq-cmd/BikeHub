@@ -1,10 +1,9 @@
-<?php
 // php/login.php
 // ─────────────────────────────────────────────────────────────
 //  Handles login.php form.
 //  DB columns: fname, lname, email, password, profile_img
 // ─────────────────────────────────────────────────────────────
-
+<?php
 session_start();
 
 if (isset($_SESSION['user_id'])) {

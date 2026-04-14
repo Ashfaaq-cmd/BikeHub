@@ -93,18 +93,56 @@ $cart_count = isset($_SESSION['cart']) ? array_sum(array_column($_SESSION['cart'
             <li><a href="contact.php">Contact</a></li>
         </ul>
         <div class="nav-right">
-            <a href="cart.php" class="cart-link">
-                <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-                <span class="cart-badge" id="cart-count"><?= $cart_count ?></span>
+
+    <!-- Cart -->
+    <a href="cart.php" class="cart-link">
+        <svg viewBox="0 0 24 24">
+            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+        <span class="cart-badge" id="cart-count"><?= $cart_count ?></span>
+    </a>
+
+    <?php if (isset($_SESSION['user_id'])): ?>
+
+        <?php
+        $pic     = $_SESSION['user_img'] ?? 'default.png';
+        $imgPath = 'uploads/' . $pic;
+
+        $has_pic = ($pic !== 'default.png') && file_exists(__DIR__ . '/' . $imgPath);
+        $initial = strtoupper(substr($_SESSION['user_name'], 0, 1));
+        ?>
+
+        <!-- Avatar -->
+        <?php if ($has_pic): ?>
+            <a href="index.php" class="nav-avatar" title="<?= safe($_SESSION['user_name']) ?>">
+                <img src="<?= $imgPath ?>" 
+                     alt="<?= safe($_SESSION['user_name']) ?>"
+                     class="nav-avatar-img">
             </a>
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <span style="color:var(--grey-l);font-size:14px;margin-right:4px">Hi, <?= safe(explode(' ', $_SESSION['user_name'])[0]) ?></span>
-                <a href="php/logout.php" class="btn-nav-outline">Log Out</a>
-            <?php else: ?>
-                <a href="login.php"    class="btn-nav-outline">Log In</a>
-                <a href="register.php" class="btn-nav-blue">Sign Up</a>
-            <?php endif; ?>
-        </div>
+        <?php else: ?>
+            <a href="#" class="nav-avatar nav-avatar-initial">
+                <?= $initial ?>
+            </a>
+        <?php endif; ?>
+
+        <!-- Username -->
+        <span style="color:var(--grey-l);font-size:14px;margin:0 6px;">
+            Hi, <?= safe(explode(' ', $_SESSION['user_name'])[0]) ?>
+        </span>
+
+        <!-- Logout -->
+        <a href="php/logout.php" class="btn-nav-outline">Log Out</a>
+
+    <?php else: ?>
+
+        <a href="login.php" class="btn-nav-outline">Log In</a>
+        <a href="register.php" class="btn-nav-blue">Sign Up</a>
+
+    <?php endif; ?>
+
+</div>
     </div>
 </nav>
 
