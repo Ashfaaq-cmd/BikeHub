@@ -332,6 +332,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initSearch();     // JS 4 — live search (products.php only)
     initForms();      // JS 5 — form validation (login/register/contact)
     initFileUpload(); // JS 6 — photo preview (register page only)
+    initCheckout();   // Checkout button handler (cart.php only)
 });
 
 
@@ -367,3 +368,28 @@ $(document).ready(function() {
     });
 
 });
+// ================================================================
+// CHECKOUT HANDLER (cart.php)
+// ================================================================
+function initCheckout() {
+    var btn = document.getElementById('checkout-btn');
+    if (!btn) return; // only runs on cart page
+
+    btn.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        if (!confirm('Confirm your order?')) return;
+
+        $.post('php/checkout.php', function (res) {
+            if (res.success) {
+                showToast('Order #' + res.order_id + ' placed ✓');
+
+                setTimeout(function () {
+                    location.reload();
+                }, 1200);
+            } else {
+                alert('Checkout failed. Try again.');
+            }
+        });
+    });
+}
