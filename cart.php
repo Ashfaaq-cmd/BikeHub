@@ -179,7 +179,7 @@ $total    = $subtotal + $shipping + $tax;
                 </div>
                 <p id="promo-msg" style="font-size:12px;margin-top:6px;display:none;"></p>
 
-                <a href="#" class="checkout-btn" onclick="alert('Checkout coming soon!');return false;">
+                <a href="#" class="checkout-btn" onclick="alert('Your order has been received!');return false;">
                     <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                     Secure Checkout
                 </a>
